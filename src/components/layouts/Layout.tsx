@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { NavBar } from "../ui";
 
 interface IProps {
   children: React.ReactNode;
@@ -18,8 +19,8 @@ export const Layout: React.FC<IProps> = ({
           content={`Informacion sobre el pokemon ${title}`}
         />
       </Head>
-      {/* NavBar */}
-      <main>{children}</main>
+      <NavBar />
+      <main className="bg-black text-white">{children}</main>
     </>
   );
 };

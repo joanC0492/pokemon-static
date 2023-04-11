@@ -1,12 +1,18 @@
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
 import type { AppProps } from "next/app";
-import { NextUIProvider } from "@nextui-org/react";
 import "@/styles/globals.css";
-import { darkTheme } from "@/themes";
+
+export const muiCache = createCache({
+  key: "mui",
+  prepend: true,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <NextUIProvider theme={darkTheme}>
+    <CacheProvider value={muiCache}>
       <Component {...pageProps} />
-    </NextUIProvider>
+    </CacheProvider>
   );
 }
+
