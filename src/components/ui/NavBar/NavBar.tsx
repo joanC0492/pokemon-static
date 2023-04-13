@@ -21,7 +21,9 @@ export const NavBar = () => {
             </p>
           </Link>
           <div className="ml-auto">
-            <p className="text-base">Favoritos</p>
+            <Link href={"/favorites"} className="text-base">
+              Favoritos
+            </Link>
           </div>
         </div>
       </div>
