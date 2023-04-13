@@ -5,20 +5,24 @@ import { Pokemon } from "@/interfaces";
 import {
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface IProps {
   pokemon: Pokemon;
 }
 const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
-  console.log(pokemon);
+  const onToggleFavorite = () => {
+    console.log("ID: ", pokemon.id);
+    localStorage.setItem("FAVORITES", JSON.stringify(pokemon.id));
+  };
+
   return (
-    <Layout title={"Pókemon"}>
+    <Layout title={pokemon.name}>
       <div className="container py-8">
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-12 md:col-span-4">
@@ -45,7 +49,9 @@ const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
                     className="flex justify-between">
                     <span className="capitalize">{pokemon.name}</span>
                   </Typography>
-                  <Button className="normal-case bg-black text-white rounded-lg px-6 outline outline-1 outline-white/50">
+                  <Button
+                    className="normal-case bg-black text-white rounded-lg px-6 outline outline-1 outline-white/50 hover:bg-black/5 transition-all duration-200"
+                    onClick={onToggleFavorite}>
                     Guardar en Favoritos
                   </Button>
                 </div>
