@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Layout } from "@/components/layouts";
 import { pokeApi } from "@/api";
@@ -10,16 +11,25 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useEffect } from "react";
+import { localFavorites } from "@/utils";
 
 interface IProps {
   pokemon: Pokemon;
 }
 const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
-  const onToggleFavorite = () => {
-    console.log("ID: ", pokemon.id);
-    localStorage.setItem("FAVORITES", JSON.stringify(pokemon.id));
+  const [isInFavorites, setIsInFavorites] = useState<boolean>(false);
+
+  const handleIsInFavorites = (): void =>
+    setIsInFavorites(localFavorites.existInFavorites(pokemon.id));
+
+  const onToggleFavorite = (): void => {
+    localFavorites.toggleFavorite(pokemon.id);
+    handleIsInFavorites();
   };
+
+  useEffect(() => {
+    handleIsInFavorites();
+  }, []);
 
   return (
     <Layout title={pokemon.name}>
@@ -50,9 +60,13 @@ const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
                     <span className="capitalize">{pokemon.name}</span>
                   </Typography>
                   <Button
-                    className="normal-case bg-black text-white rounded-lg px-6 outline outline-1 outline-white/50 hover:bg-black/5 transition-all duration-200"
+                    className={`normal-case  rounded-lg px-6 outline outline-1 outline-white/50 transition-all duration-200 hover:opacity-80 ${
+                      isInFavorites
+                        ? "bg-white text-black"
+                        : "bg-black text-white"
+                    }`}
                     onClick={onToggleFavorite}>
-                    Guardar en Favoritos
+                    {isInFavorites ? "En favoritos" : "Guardar en Favoritos"}
                   </Button>
                 </div>
                 <div className="mt-5">
@@ -102,7 +116,6 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
       id: `${index + 1}`,
     },
   }));
-  console.log(pokemons151);
 
   return {
     paths: pokemons151,
@@ -111,16 +124,10 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   };
 };
 
-// Debería usar getStaticProps cuando:
-//- Los datos necesarios para representar la página están disponibles en el momento de la compilación antes de la solicitud del usuario.
-//- Los datos provienen de un CMS sin cabeza.
-//- Los datos se pueden almacenar en caché públicamente (no específicos del usuario).
-//- La página debe estar renderizada previamente (para SEO) y ser muy rápida: getStaticProps genera archivos HTML y JSON, los cuales pueden ser almacenados en caché por un CDN para el rendimiento.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };
 
   const { data } = await pokeApi.get<Pokemon>(`/pokemon/${id}`);
-  console.log(data);
   return {
     props: {
       pokemon: data,
