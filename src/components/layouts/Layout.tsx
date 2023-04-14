@@ -5,6 +5,9 @@ interface IProps {
   children: React.ReactNode;
   title?: string;
 }
+
+const origin = typeof window === "undefined" ? "" : window.location.origin;
+
 export const Layout: React.FC<IProps> = ({
   children,
   title = "Pokemon App",
@@ -13,14 +16,20 @@ export const Layout: React.FC<IProps> = ({
     <>
       <Head>
         <title>{title}</title>
-        <meta name="author" content="Joan Cochachi" />
+        <meta property="og:title" content={`Informacion sobre ${title}`} />
+        <meta
+          property="og:description"
+          content={`Esta es la pagina sobre ${title}`}
+        />
         <meta
           name="description"
           content={`Informacion sobre el pokemon ${title}`}
         />
+        <meta property="og:image" content={`${origin}/img/banner.png`} />
       </Head>
       <NavBar />
       <main className="bg-black text-white">{children}</main>
     </>
   );
 };
+

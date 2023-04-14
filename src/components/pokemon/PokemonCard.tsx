@@ -12,13 +12,14 @@ interface IProps {
   pokemon: SmallPokemon;
   className?: string;
 }
+
 export const PokemonCard = ({ pokemon, className = "" }: IProps) => {
   const router = useRouter();
 
   return (
     <div className={`${className}`}>
       <Card className="bg-[#121113] text-white">
-        <CardActionArea onClick={() => router.push(`pokemon/${pokemon.id}`)}>
+        <CardActionArea onClick={() => router.push(`name/${pokemon.name}`)}>
           <CardMedia
             component="img"
             image={pokemon.img}
