@@ -12,6 +12,7 @@ export const Layout: React.FC<IProps> = ({
   children,
   title = "Pokemon App",
 }) => {
+
   return (
     <>
       <Head>
@@ -28,8 +29,7 @@ export const Layout: React.FC<IProps> = ({
         <meta property="og:image" content={`${origin}/img/banner.png`} />
       </Head>
       <NavBar />
-      <main className="bg-black text-white">{children}</main>
+      <main>{children}</main>
     </>
   );
 };
-
