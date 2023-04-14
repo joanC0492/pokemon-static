@@ -141,13 +141,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     `https://pokeapi.co/api/v2/pokemon/${name}`
   );
 
+  const pokemon = {
+    id: data.id,
+    name: data.name,
+    sprites: data.sprites,
+  };
+
   return {
     props: {
-      pokemon: data,
+      pokemon,
     },
   };
 };
 
 export default PokemonByNamePage;
-
 
