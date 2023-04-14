@@ -8,8 +8,7 @@ export const useLocalStorage = <T>(name: string, value: T) => {
     setItem(JSON.parse(localStorage.getItem(name) || "[]"));
   }, []);
 
-  useEffect(() => {
-    console.log(isMounted.current, name, item);
+  useEffect(() => {    
     if (isMounted.current === false) return;
     localStorage.setItem(name, JSON.stringify(item));
   }, [item]);

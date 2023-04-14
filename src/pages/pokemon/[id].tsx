@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Layout } from "@/components/layouts";
-import { pokeApi } from "@/api";
 import { Pokemon } from "@/interfaces";
 import { getPokemonInfo, localFavorites } from "@/utils";
 
@@ -130,17 +129,32 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   return {
     paths: pokemons151,
     // Debe ir en falso para que los id's que no estan en el arreglo no se consideren y mande al 404
-    fallback: false,
+    // Le agregamos en blocking, este blocking nos deja pasar al getStaticProps
+    fallback: "blocking",
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };
 
+  // Validamos si existe el pokemon que estamos buscando
+  const pokemon = await getPokemonInfo(id);
+
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: "/",
+        // "false" porque esta pagina puede que exista en un futuro
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
-      pokemon: await getPokemonInfo(id),
+      pokemon,
     },
+    revalidate: 86400,
   };
 };
 

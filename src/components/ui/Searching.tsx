@@ -63,3 +63,5 @@ export const Searching = ({ search, handleSearch }: IProps) => {
     </div>
   );
 };
+
+
