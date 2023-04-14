@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { NextPage, GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import confetti from "canvas-confetti";
+import { pokeApi } from "@/api";
+import { Layout } from "@/components/layouts";
+import { Pokemon, PokemonListResponse } from "@/interfaces";
 import {
   Button,
   Card,
-  CardContent,
   CardMedia,
+  CardContent,
   Typography,
 } from "@mui/material";
-import { Layout } from "@/components/layouts";
-import { pokeApi } from "@/api";
-import { Pokemon } from "@/interfaces";
 import { localFavorites } from "@/utils";
 
 interface IProps {
   pokemon: Pokemon;
 }
-const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<IProps> = ({ pokemon }) => {
   const [isInFavorites, setIsInFavorites] = useState<boolean>(false);
 
   const handleIsInFavorites = (): void =>
@@ -41,6 +41,7 @@ const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
   useEffect(() => {
     handleIsInFavorites();
   }, []);
+
   return (
     <Layout title={pokemon.name}>
       <div className="container py-8">
@@ -119,25 +120,27 @@ const PokemonPage: NextPage<IProps> = ({ pokemon }) => {
   );
 };
 
-// Debe usar getStaticPaths si está pre-renderizando estáticamente páginas que usan rutas dinámicas
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  const pokemons151 = [...Array(151)].map((value, index) => ({
+  const { data } = await pokeApi.get<PokemonListResponse>("/pokemon?limit=151");
+
+  const paths = data.results.map((item) => ({
     params: {
-      id: `${index + 1}`,
+      name: item.name,
     },
   }));
 
   return {
-    paths: pokemons151,
-    // Debe ir en falso para que los id's que no estan en el arreglo no se consideren y mande al 404
+    paths,
     fallback: false,
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { id } = params as { id: string };
+  const { name } = params as { name: string };
+  const { data } = await pokeApi.get<Pokemon>(
+    `https://pokeapi.co/api/v2/pokemon/${name}`
+  );
 
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${id}`);  
   return {
     props: {
       pokemon: data,
@@ -145,4 +148,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-export default PokemonPage;
+export default PokemonByNamePage;
+
+

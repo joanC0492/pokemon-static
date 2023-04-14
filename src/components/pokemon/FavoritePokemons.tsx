@@ -7,7 +7,7 @@ export const FavoritePokemons = ({ pokemons }: IProps) => {
   return (
     <div className="grid container grid-cols-6 gap-4 py-4">
       {pokemons.map((id) => (
-        <FavoriteCardPokemon pokemonId={id} />
+        <FavoriteCardPokemon pokemonId={id} key={id}/>
       ))}
     </div>
   );
